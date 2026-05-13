@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matific Cloud Automator</title>
+    <style>
+        body { background-color: #0b0f19; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background-color: #111827; padding: 35px; border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.6); width: 320px; text-align: center; border: 1px solid #1f2937; }
+        h2 { margin-bottom: 20px; font-size: 22px; color: #f3f4f6; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #374151; background: #1f2937; color: white; box-sizing: border-box; font-size: 14px; }
+        input:focus { border-color: #e02424; outline: none; }
+        button { width: 100%; padding: 14px; background: #e02424; border: none; color: white; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 15px; transition: 0.2s; }
+        button:hover { background: #b91c1c; }
+        #status { margin-top: 20px; font-size: 14px; color: #9ca3af; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Matific Cloud Bot 🚀</h2>
+    <input type="text" id="ra" placeholder="Digite o RA">
+    <input type="text" id="digito" placeholder="Dígito do RA">
+    <input type="password" id="senha" placeholder="Digite a Senha">
+    <button onclick="iniciarAutomacao()">Iniciar 5 Tarefas</button>
+    <div id="status">Pronto para iniciar...</div>
+</div>
+
+<script>
+    async function iniciarAutomacao() {
+        const ra = document.getElementById('ra').value;
+        const digito = document.getElementById('digito').value;
+        const senha = document.getElementById('senha').value;
+        const statusDiv = document.getElementById('status');
+
+        if(!ra || !digito || !senha) {
+            statusDiv.innerHTML = "<span style='color: #ef4444;'>❌ Preencha todos os campos!</span>";
+            return;
+        }
+
+        statusDiv.innerHTML = "⏳ Conectando à nuvem e autenticando conta...";
+
+        try {
+            // Quando você hospedar no Render, mude o link abaixo para a URL que eles te derem
+            const URL_BACKEND = "onrender.com";
+
+            const resposta = await fetch(URL_BACKEND, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ra, digito, senha })
+            });
+
+            const dados = await resposta.json();
+            
+            if(resposta.ok) {
+                statusDiv.innerHTML = `<span style='color: #10b981;'>✅ ${dados.message}</span>`;
+            } else {
+                statusDiv.innerHTML = `<span style='color: #ef4444;'>❌ Erro: ${dados.error}</span>`;
+            }
+        } catch (erro) {
+            statusDiv.innerHTML = "<span style='color: #ef4444;'>❌ Erro ao conectar com o bot na nuvem. Verifique o servidor.</span>";
+        }
+    }
+</script>
+
+</body>
+</html>
